@@ -1,0 +1,95 @@
+arch linux setup:
+- download iso
+- identify usb device -> lsblk
+- sudo wipefs -a /dev/sdX -> clean step 1
+- sudo dd if=/dev/zero of=/dev/sdX bs=1M count=10 -> clean step 2
+- depending on device: boot from usb -> now in arch installer zsh shell
+- if font too small -> setfont ter-v32b
+- check internet connection -> ip link
+- connect via wifi -> iwctl -> new sub shell
+  - device list -> should at least show wlan0
+  - if not already powered on, then:
+    - device <name> set-property Powered on
+    - adapter <adapter> set-property Powered on
+  - station <name> scan
+  - station <name> get-networks -> should show available routers
+  - station <name> connect <SSID> -> prompt for passphrase
+  - leave shell and check connection -> ping archlinux.org
+- timedatectl -> make sure clock is synchronized
+- fdisk -l -> identify which disk to use
+- fdisk /dev/<name-of-disk-to-partition> -> new sub shell (for my old notebook with bios, not uefi), in my case /dev/sda
+  - o -> create new DOS (MBR) partition table
+  - swap partition:
+    - n -> new partition
+    - p -> primary
+    - 1 -> partition number
+    - <enter> -> default start
+    - +4G -> custom end, swap size
+    - t -> partition type
+    - 82 -> linux swap
+  - create root partition:
+    - n
+    - p
+    - 2
+    - <enter> -> default start (after swap)
+    - <enter> -> default end (rest of disk)
+    - t
+    - 2
+    - 83 -> linux filesystem
+  - make root bootable
+    - a
+    - 2
+  - p -> check layout
+  - w -> write table, should exit the sub shell
+- mkfs.ext4 /dev/sda2
+- mkswap /dev/sda1
+- mount /dev/sda2 /mnt
+- swapon /dev/sda1
+- pacstrap -K /mnt base linux linux-firmware vim iwd sudo grub man-db man-pages which git curl
+- genfstab -U /mnt >> /mnt/etc/fstab -> uuid for paritions, need for boot and systemd init
+- arch-chroot /mnt -> change into mounted roo, interact with newly created filesystem -> new sub shell
+  - ln -sf /usr/share/zoneinfo/Europe/Vienna /etc/localtime -> set local time
+  - hwclock --systohc -> hardware clock to UTC
+  - vim /etc/locale.gen -> uncomment en_US.UTF-8 UTF-8
+  - locale-gen -> generate locales
+  - vim /etc/locale.conf -> add line: LANG=en_US.UTF-8
+  - vim /etc/hostname -> add preferred name
+  - vim /etc/vconsole.conf -> add keymap: KEYMAP=us
+  - mkinitcpio -P -> create the config from the previously edited files
+  - passwd -> set password
+  - pacman -S grub -> download bootloader
+  - grub-intall /dev/sda -> install bootloader with disk info
+  - systemctl enable iwd -> wifi capability on startup
+  - exit -> exit chroot shell
+- reboot
+
+- login on new system -> root + password -> only terminal for now
+- systemctl enable --now systemd-resolved -> if forgot to configure network in chroot shell
+- ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf -> correct file for dns resolution
+- iwctl -> connect to internet, same as during install
+
+- post installation -> setting up personal system
+  - useradd -m <user-name> -> default is root, which is not recommeded
+  - vim /etc/sudoers -> uncomment 2 lines that say to allow to run as other user if password known
+  - sudo pacman -S xorg xorg-xinit xorg-xrandr xorg-xsetroot xorg-xprop -> needed for i3wm install/setup
+  - sudo pacman -S i3 i3status i3lock dmenu -> install basics for i3wm
+  - sudo pacman -S feh xterm firefox picom
+  - echo "exec i3" > ~/.xinitrc -> the 'startx' command launches i3
+  - sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
+  - sudo vim /etc/systemd/system/getty@tty1.service.d/override.conf -> add the following content:
+    ```
+    [Service]
+    ExecStart=
+    ExecStart=-/sbin/agetty --autologin <your_username> --noclear %I $TERM
+    ```
+  - sudo systemctl daemon-reexec
+  - sudo vim ~/.bash_profile -> for new user, not root
+    ```
+    if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
+        exec startx
+    fi
+    ```
+  - the last steps force the system to login as the specified user, and launch i3wm, no login prompt
+  - remove the /etc/systemd/system/getty@tty1.service.d directory and run sudo systemctl daemon-reexec to disable autologin, but keep i32m launch
+
+  
