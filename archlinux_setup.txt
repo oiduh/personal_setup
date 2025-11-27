@@ -92,4 +92,32 @@ arch linux setup:
   - the last steps force the system to login as the specified user, and launch i3wm, no login prompt
   - remove the /etc/systemd/system/getty@tty1.service.d directory and run sudo systemctl daemon-reexec to disable autologin, but keep i32m launch
 
-  
+MISC:
+  - hw clock configured incorrectly:
+    - sudo systemctl enable --now systemd-timesyncd.service
+    - sudo timedatectl set-ntp true
+  - missing certificates
+    - sudo pacman -Syu ca-certificates ca-certificates-utils
+    - sudo update-ca-trust
+  - debugging dns issues
+    - sudo pacman -S dnsutils
+    - nslookup github.com
+  - issues with only supporting ipv6
+    - edit /etc/iwd/main.conf and add these lines:
+    ```
+    [General]
+    EnableNetworkConfiguration=true
+    [Network]
+    NameResolvingService=systemd
+    ```
+    - sudo systemctl restart iwd -> ping github.com should work now
+
+i3wm setup:
+  - change stuff in .config/i3/config
+  - TODO: just copy the config when done
+  - keywords: fontsize (i3wm and dmenu separately), background
+  - also i3status -> bar bottom
+
+xterm setup:
+  - not yet sure if i keep it, but it is minimal
+  - TODO: just copy the config when done
