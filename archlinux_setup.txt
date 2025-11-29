@@ -111,6 +111,9 @@ MISC:
     NameResolvingService=systemd
     ```
     - sudo systemctl restart iwd -> ping github.com should work now
+  - downnload favorite nerdfont from the webiste and unzip the *.ttf file to .local/share/fonts, then fc-cache -fv to update -> use in .Xresources
+  - use zsh as default shell: chsh -s $(which zsh) + configure oh-my-zsh
+  - xterm sucks to configure -> use alacritty, modern and better anyways, config only involves nerdfont setup
 
 i3wm setup:
   - change stuff in .config/i3/config
@@ -121,3 +124,11 @@ i3wm setup:
 xterm setup:
   - not yet sure if i keep it, but it is minimal
   - TODO: just copy the config when done
+  - no; use alacritty instead
+
+alacritty setup:
+  - TODO: just copy the config when done
+
+zsh setup:
+  - create .zprofile file and add this line: ```if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then exec startx fi```
+  - TODO: just copy the .zshrc when done
