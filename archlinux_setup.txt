@@ -91,6 +91,14 @@ arch linux setup:
     ```
   - the last steps force the system to login as the specified user, and launch i3wm, no login prompt
   - remove the /etc/systemd/system/getty@tty1.service.d directory and run sudo systemctl daemon-reexec to disable autologin, but keep i32m launch
+  - install yay for advanced package management -> aur helper
+    - use these commands -> installs all dependencies including go if not already installed
+    ```
+    sudo pacman -S --needed git base-devel
+    git clone https://aur.archlinux.org/yay.git
+    cd yay
+    makepkg -si
+    ```
 
 MISC:
   - hw clock configured incorrectly:
@@ -114,6 +122,7 @@ MISC:
   - downnload favorite nerdfont from the webiste and unzip the *.ttf file to .local/share/fonts, then fc-cache -fv to update -> use in .Xresources
   - use zsh as default shell: chsh -s $(which zsh) + configure oh-my-zsh
   - xterm sucks to configure -> use alacritty, modern and better anyways, config only involves nerdfont setup
+  - tmux is a must have -> sudo pacman -S tmux; config when done
 
 i3wm setup:
   - change stuff in .config/i3/config
@@ -132,3 +141,8 @@ alacritty setup:
 zsh setup:
   - create .zprofile file and add this line: ```if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then exec startx fi```
   - TODO: just copy the .zshrc when done
+  - for zsh-vi-mode install via yay: yay -S zsh-vi-mode (rest done in .zshrc)
+  - for autosuggestions: git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions (rest done in .zshrc)
+
+tmux setup:
+  - TODO: just copy .tmux.conf when done + plugin guide
