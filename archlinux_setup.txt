@@ -146,3 +146,8 @@ zsh setup:
 
 tmux setup:
   - TODO: just copy .tmux.conf when done + plugin guide
+
+neovim setup:
+  - TODO: include config files
+  - requires npm for management via mason
+  - to install from source -> gcc or clang + make + git
