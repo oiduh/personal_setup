@@ -151,3 +151,18 @@ neovim setup:
   - TODO: include config files
   - requires npm for management via mason
   - to install from source -> gcc or clang + make + git
+
+python setup:
+  - install uv via guide on uv github (github setup necessary -> ssh setup + git setup)
+  - uv different from pyenv -> instead of global registry, project based registry
+    - venv is activated inside a project, not via a global command
+    - no need to activate it, unlike with pyenv
+    - run python scripts with 'uv run script.py'
+    - neovim works with adjusted pyrightconfig.json file
+      ```
+      {
+        "venvPath": ".",
+        "venv": ".venv"
+      }
+      ```
+      add more stuff if necessary e.g. custom PYTHONPATH
