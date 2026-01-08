@@ -123,6 +123,7 @@ MISC:
   - use zsh as default shell: chsh -s $(which zsh) + configure oh-my-zsh
   - xterm sucks to configure -> use alacritty, modern and better anyways, config only involves nerdfont setup
   - tmux is a must have -> sudo pacman -S tmux; config when done
+  - install zoxide -> better navigation
 
 i3wm setup:
   - change stuff in .config/i3/config
@@ -141,8 +142,12 @@ alacritty setup:
 zsh setup:
   - create .zprofile file and add this line: ```if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then exec startx fi```
   - TODO: just copy the .zshrc when done
-  - for zsh-vi-mode install via yay: yay -S zsh-vi-mode (rest done in .zshrc)
+  - use builtin plugin vi-mode (also do not forget 'bindkey -v')
   - for autosuggestions: git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions (rest done in .zshrc)
+    (can it be added with pacman? same as zsh-syntax-highlighting)
+  - needs fzf for better file navigation, completion and history navigation
+    sudo pacman -S fzf
+  - other plugins can also be install via pacman e.g. zsh-syntax-highlighting, zsh-autosuggestions
 
 tmux setup:
   - TODO: just copy .tmux.conf when done + plugin guide
